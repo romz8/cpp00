@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   phonebook.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rjobert <rjobert@student.42.fr>            +#+  +:+       +#+        */
+/*   By: romainjobert <romainjobert@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 12:50:29 by rjobert           #+#    #+#             */
-/*   Updated: 2024/01/08 21:33:05 by rjobert          ###   ########.fr       */
+/*   Updated: 2024/01/09 17:49:37 by romainjober      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@ std::string input_loader(void)
 {
 	std::string input;
 	
-	std::cout << "Choose your command : ADD, SEARCH, EXIT" << std::endl;
-	std::cin >> input;
+	std::cout << "Choose your command : ADD, SEARCH, EXIT then press enter" << std::endl;
+	std::cout << ">";
+	std::getline(std::cin, input);
 	if (input != "ADD" && input != "SEARCH" && input != "EXIT")
 		std::cout << "invalid input, pls enter ADD, SEARCH or EXIT" << std::endl;
 	return (input);
@@ -45,6 +46,31 @@ void	display_line(int index, Contact contact)
 	std::cout << std::endl;
 }
 
+bool	all_digit(const std::string str)
+{
+	for (size_t i = 0; i < str.length(); i++)
+	{
+		if (i == 0)
+		{
+			if (str[i] != '+' && !isdigit(str[i]))
+				return(false);
+		}
+		else if (!isdigit(str[i]))
+			return (false);
+	}
+	return (true);
+}
+void start_greeting(void)
+{
+	std::cout << std::endl;
+	std::cout << std::endl;
+	std::cout << "\t" << "*******************************************" << std::endl;
+	std::cout << "\t" <<  "** WELCOME TO THE PHONEBOOK OF THE 1980s **" << std::endl;
+	std::cout << "\t" <<  "*******************************************" << std::endl;
+	std::cout << std::endl;
+	std::cout << std::endl;
+}
+
 int main(int argc, char *argv[])
 {
 	std::string input;
@@ -56,7 +82,8 @@ int main(int argc, char *argv[])
 		std::cout << "this program takes no argument" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	input =  "starting";
+	start_greeting();
+	input.clear();
 	while (input != "EXIT")
 	{
 		input = input_loader();

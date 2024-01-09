@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   phonebook.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rjobert <rjobert@student.42.fr>            +#+  +:+       +#+        */
+/*   By: romainjobert <romainjobert@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 12:20:04 by rjobert           #+#    #+#             */
-/*   Updated: 2024/01/08 19:43:31 by rjobert          ###   ########.fr       */
+/*   Updated: 2024/01/09 16:14:19 by romainjober      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,13 @@
 # include <iostream>
 # include <string>
 # include <iomanip>
+# include <cctype>
 # include <sstream>
 # include "Contact.hpp"
 # include "PhoneBook.hpp"
 
 void	format_display(std::string text);
 void	display_line(int index, Contact contact);
+bool    all_digit(const std::string str);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PhoneBook.class.cpp                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rjobert <rjobert@student.42.fr>            +#+  +:+       +#+        */
+/*   By: romainjobert <romainjobert@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 13:04:26 by rjobert           #+#    #+#             */
-/*   Updated: 2024/01/08 21:32:57 by rjobert          ###   ########.fr       */
+/*   Updated: 2024/01/09 17:38:27 by romainjober      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,41 @@ PhoneBook::PhoneBook(void)
 std::string	contact_input(std::string contact_type)
 {
 	std::string input;
-	int	n;
-	
-	n = -1;
+
 	std::cout << "please enter contact " << contact_type << std::endl;
-	while(n < 0)
+	while(42)
 	{
 		input.clear();
 		std::getline(std::cin, input);
-		if (input.length() == 0)
+		if (input.length() == 0 || input.empty())
 			std::cout << contact_type << " cannot be empty, enter again:" << std::endl;
 		else
-			n = 0;
+			break;
 	}
-	return input;
+	return (input);
 }
+
+std::string number_input(std::string str)
+{
+	std::string	input;
+	
+	std::cout << "please enter "<< str  << " 's phone number" << std::endl;
+	while (42)
+	{
+		input.clear();
+		std::getline(std::cin, input);
+		if (input.empty() || input.length() == 0)
+			std::cout  << "phone number cannot be empty, enter again:" << std::endl;
+		else if (input[0] != '+' && !isdigit(input[0]))
+			std::cout  << "phone number can only start by a number or +" << std::endl;
+		else if (!all_digit(input))
+			std::cout  << "phone number can only be made of numbers" << std::endl;
+		else
+			break;
+	}
+	return (input);
+}
+
 
 /* CAREFUL EXPLAINATION HERE ABOUT INDEX ROLLING VS TOTAL FOR DISPLAY LIST*/
 void	PhoneBook::Add(void)
@@ -47,7 +67,7 @@ void	PhoneBook::Add(void)
 	contact_info[0] = contact_input("firstname");
 	contact_info[1] = contact_input("lastname");
 	contact_info[2] = contact_input("nickname");
-	contact_info[3] = contact_input("phonenumber");
+	contact_info[3] = number_input(contact_info[0]);
 	contact_info[4] = contact_input("darkest_secret");
 	
 	index = this->index;
@@ -68,7 +88,7 @@ void	PhoneBook::Search(void)
 	total = this->count;
 	if (total == 0)
 	{
-		std::cout << "No saved contact" << std::endl;
+		std::cout << "No saved contact, please enter one" << std::endl;
 		return;
 	}
 	phone_header();
@@ -117,6 +137,5 @@ int	read_index(int total)
 				break;
 		}
 	}
-	std::cout << "TEST index is " <<  index << std::endl;
 	return (index);
 }
