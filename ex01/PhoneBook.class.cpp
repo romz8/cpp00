@@ -6,59 +6,29 @@
 /*   By: romainjobert <romainjobert@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 13:04:26 by rjobert           #+#    #+#             */
-/*   Updated: 2024/01/09 17:38:27 by romainjober      ###   ########.fr       */
+/*   Updated: 2024/01/09 19:02:32 by romainjober      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "phonebook.h"
-void	phone_header(void);
-int		read_index(int total);
+void		phone_header(void);
+int			read_index(int total);
+std::string trim_string(std::string str);
+std::string	contact_input(std::string contact_type);
+std::string number_input(std::string str);
 
 PhoneBook::PhoneBook(void)
 {
 	this->count = 0;
 	this->index = 0;	
 }
-std::string	contact_input(std::string contact_type)
-{
-	std::string input;
 
-	std::cout << "please enter contact " << contact_type << std::endl;
-	while(42)
-	{
-		input.clear();
-		std::getline(std::cin, input);
-		if (input.length() == 0 || input.empty())
-			std::cout << contact_type << " cannot be empty, enter again:" << std::endl;
-		else
-			break;
-	}
-	return (input);
-}
-
-std::string number_input(std::string str)
-{
-	std::string	input;
-	
-	std::cout << "please enter "<< str  << " 's phone number" << std::endl;
-	while (42)
-	{
-		input.clear();
-		std::getline(std::cin, input);
-		if (input.empty() || input.length() == 0)
-			std::cout  << "phone number cannot be empty, enter again:" << std::endl;
-		else if (input[0] != '+' && !isdigit(input[0]))
-			std::cout  << "phone number can only start by a number or +" << std::endl;
-		else if (!all_digit(input))
-			std::cout  << "phone number can only be made of numbers" << std::endl;
-		else
-			break;
-	}
-	return (input);
-}
-
-
-/* CAREFUL EXPLAINATION HERE ABOUT INDEX ROLLING VS TOTAL FOR DISPLAY LIST*/
+/*
+Add: This method allows adding a new contact to the PhoneBook.
+It prompts for contact details (first name, last name, nickname, phone number, darkest secret),
+and adds the new contact to the PhoneBook. It handles the rolling index functionality to maintain
+a maximum of 8 contacts, replacing the oldest contact when the limit is reached.
+*/
 void	PhoneBook::Add(void)
 {
 	std::string contact_info[5];
@@ -80,6 +50,12 @@ void	PhoneBook::Add(void)
 		index = 0;
 	this->index = index;
 }
+
+/*
+Search: This method displays the list of contacts and allows the user to select one for more details.
+If no contacts are stored, it informs the user. Otherwise, it displays a list of contacts and prompts
+for an index to view detailed information about the selected contact.
+*/
 void	PhoneBook::Search(void)
 {
 	int	total;
@@ -110,6 +86,11 @@ void	phone_header(void)
 	std::cout << std::endl;
 }
 
+/*
+read_index: This function prompts the user to enter an index to look up a contact.
+It performs validation to ensure the input is a valid index (within the range of stored contacts).
+Returns the integer index if valid, or continues to prompt the user until a valid input is provided.
+*/
 int	read_index(int total)
 {
 	std::string input;
@@ -138,4 +119,67 @@ int	read_index(int total)
 		}
 	}
 	return (index);
+}
+
+/*
+trim_string: This function removes leading and trailing whitespace from a string.
+Utilizes standard string methods find_first_not_of and find_last_not_of for trimming.
+Returns the trimmed string.
+*/
+std::string trim_string(std::string str)
+{
+	size_t start;
+	size_t end;
+	std::string trimmed;
+
+	start = str.find_first_not_of(" \t\n\r\f\v");
+	end = str.find_last_not_of(" \t\n\r\f\v");
+	trimmed = str.substr(start, end - start + 1);
+	return(trimmed);
+}
+
+/*
+contact_input: This function prompts the user for input regarding a specific contact detail.
+It repeatedly prompts the user until a non-empty string is entered.
+The input is then trimmed of leading and trailing whitespace and returned.
+*/
+std::string	contact_input(std::string contact_type)
+{
+	std::string input;
+
+	std::cout << "please enter contact " << contact_type << std::endl;
+	while(42)
+	{
+		input.clear();
+		std::getline(std::cin, input);
+		if (input.length() == 0 || input.empty())
+			std::cout << contact_type << " cannot be empty, enter again:" << std::endl;
+		else
+			break;
+	}
+	return (trim_string(input));
+}
+
+/*
+same but check for phone number (digit only and first can be + for international phnenber)
+*/
+std::string number_input(std::string str)
+{
+	std::string	input;
+	
+	std::cout << "please enter "<< str  << " 's phone number" << std::endl;
+	while (42)
+	{
+		input.clear();
+		std::getline(std::cin, input);
+		if (input.empty() || input.length() == 0)
+			std::cout  << "phone number cannot be empty, enter again:" << std::endl;
+		else if (input[0] != '+' && !isdigit(input[0]))
+			std::cout  << "phone number can only start by a number or +" << std::endl;
+		else if (!all_digit(input))
+			std::cout  << "phone number can only be made of numbers" << std::endl;
+		else
+			break;
+	}
+	return (trim_string(input));
 }
