@@ -6,18 +6,19 @@
 #    By: rjobert <rjobert@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/08 16:48:54 by rjobert           #+#    #+#              #
-#    Updated: 2024/01/08 16:50:15 by rjobert          ###   ########.fr        #
+#    Updated: 2024/01/10 18:44:13 by rjobert          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC := g++
+CC := c++
 
-SRC = phonebook.cpp Contact.class.cpp PhoneBook.class.cpp
+SRC = main.cpp Contact.cpp PhoneBook.cpp
 NAME = phonebook
 OBJS = $(SRC:.cpp=.o)
 DEPS = $(SRC:.cpp=.d)
 RM = rm -rf
 FLAGS = -Wall -Wextra -Werror -MMD -I ./
+HEADER = phonebook.h
 
 all: $(NAME)
 
@@ -25,7 +26,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CC) $(OBJS) $(FLAGS) -o $(NAME)
 
-%.o: %.cpp
+%.o: %.cpp Makefile $(HEADER)
 	$(CC) $(FLAGS) -c $< -o $@
 
 clean:

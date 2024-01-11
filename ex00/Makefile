@@ -3,15 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rjobert <rjobert@student.42barcelo>        +#+  +:+       +#+         #
+#    By: rjobert <rjobert@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/24 14:09:50 by rjobert           #+#    #+#              #
-#    Updated: 2023/11/24 14:09:52 by rjobert          ###   ########.fr        #
+#    Updated: 2024/01/10 18:34:16 by rjobert          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
-CC := g++
+CC := c++
 
 SRC = megaphone.cpp
 NAME = megaphone

@@ -1,132 +1,203 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   phonebook.cpp                                      :+:      :+:    :+:   */
+/*   PhoneBook.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: romainjobert <romainjobert@student.42.f    +#+  +:+       +#+        */
+/*   By: rjobert <rjobert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/05 12:50:29 by rjobert           #+#    #+#             */
-/*   Updated: 2024/01/09 18:46:40 by romainjober      ###   ########.fr       */
+/*   Created: 2024/01/08 13:04:26 by rjobert           #+#    #+#             */
+/*   Updated: 2024/01/11 13:10:58 by rjobert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "phonebook.h"
+void		phone_header(void);
+int			read_index(int total);
+std::string trim_string(std::string str);
+std::string	contact_input(std::string contact_type);
+std::string number_input(void);
+bool empty_or_spaces(const std::string& str);
 
-/*
-input_loader: This function prompts the user to input a command and validates it.
-It supports commands like ADD, SEARCH, and EXIT. If the user inputs an invalid
-command, it displays an error message. The function returns the user's input.
-*/
-std::string input_loader(void)
+PhoneBook::PhoneBook(void)
 {
-	std::string input;
-	
-	std::cout << "Choose your command : ADD, SEARCH, EXIT then press enter" << std::endl;
-	std::cout << ">";
-	std::getline(std::cin, input);
-	if (input != "ADD" && input != "SEARCH" && input != "EXIT")
-		std::cout << "invalid input, pls enter ADD, SEARCH or EXIT" << std::endl;
-	return (input);
+	this->count = 0;
+	this->index = 0;	
 }
 
 /*
-format_display: This function is responsible for formatting and displaying text
-in a specific way. If the text is longer than 10 characters, it truncates the text
-and appends an ellipsis ('.'). Otherwise, it displays the text right-aligned within
-a field of width 10 characters. This function is used to ensure consistent display
-of text data.
+Add: This method allows adding a new contact to the PhoneBook.
+It prompts for contact details (first name, last name, nickname, phone number, darkest secret),
+and adds the new contact to the PhoneBook. It handles the rolling index functionality to maintain
+a maximum of 8 contacts, replacing the oldest contact when the limit is reached.
 */
-void	format_display(std::string text)
+void	PhoneBook::Add(void)
 {
-	int text_len;
+	std::string contact_info[5];
+	int	index;
 	
-	text_len = text.length();
-	if (text_len > 10)
+	contact_info[0] = contact_input("firstname");
+	contact_info[1] = contact_input("lastname");
+	contact_info[2] = contact_input("nickname");
+	contact_info[3] = number_input();
+	contact_info[4] = contact_input("darkest secret");
+	
+	index = this->index;
+	this->contacts[index] = Contact(contact_info[0], contact_info[1], contact_info[2], 
+	contact_info[3], contact_info[4]);
+	index++;
+	if (this->count < 8)
+		this->count = index;
+	if (index > 7)
+		index = 0;
+	this->index = index;
+}
+
+/*
+Search: This method displays the list of contacts and allows the user to select one for more details.
+If no contacts are stored, it informs the user. Otherwise, it displays a list of contacts and prompts
+for an index to view detailed information about the selected contact.
+*/
+void	PhoneBook::Search(void)
+{
+	int	total;
+	int	index_s;
+	
+	total = this->count;
+	if (total == 0)
 	{
-		std::cout << text.substr(0, 9);
-		std::cout << ".";
+		std::cout << "No saved contact, please enter one" << std::endl;
 		return;
-	}	
-	std::cout << std::right << std::setw(10) << text;
-	return ;
+	}
+	phone_header();
+	for (int i = 0; i < total; i++)
+		display_line(i, contacts[i]);
+	index_s = read_index(total);
+	contacts[index_s].Display_details();
 }
 
-/*
-display_line: This function takes an index and a Contact object as parameters.
-It uses the format_display function to display the index and then calls the Display
-method of the Contact object. This function is used to display a line of contact
-information in a formatted manner.
-*/
-void	display_line(int index, Contact contact)
+void	phone_header(void)
 {
-	format_display(std::to_string(index));
+	format_display("index");
 	std::cout << "|";
-	contact.Display();
+	format_display("firstname");
+	std::cout << "|";
+	format_display("lastname");
+	std::cout << "|";
+	format_display("nickname");
 	std::cout << std::endl;
 }
 
-bool	all_digit(const std::string str)
+/*
+read_index: This function prompts the user to enter an index to look up a contact.
+It performs validation to ensure the input is a valid index (within the range of stored contacts).
+Returns the integer index if valid, or continues to prompt the user until a valid input is provided.
+*/
+int	read_index(int total)
 {
-	for (size_t i = 0; i < str.length(); i++)
+	std::string input;
+	int	index;
+
+	index = -1;
+	std::cout << "Enter index to lookup: " << std::endl;
+	while (index > 7 || index < 0 || input.empty() || input.length() != 1)
 	{
-		if (i == 0)
+		input.erase();
+		input = readline_wrapper(input);
+		if (input.length() != 1 || !(input[0] >= '0' && input[0] <= '7'))
+			std::cout << "incorrect index input try again" << std::endl;
+		else
 		{
-			if (str[i] != '+' && !isdigit(str[i]))
-				return(false);
+			std::stringstream ss(input);
+			ss >> index;
+			ss.clear();
+			if (index > 7 || index < 0 || index >= total)
+			{
+				std::cout << "incorrect index input try again" << std::endl;
+				index = -1;
+			}
+			else 
+				break;
 		}
-		else if (!isdigit(str[i]))
+	}
+	return (index);
+}
+
+/*
+trim_string: This function removes leading and trailing whitespace from a string.
+Utilizes standard string methods find_first_not_of and find_last_not_of for trimming.
+Returns the trimmed string.
+*/
+std::string trim_string(const std::string str)
+{
+	size_t start;
+	size_t end;
+	std::string trimmed;
+
+	start = str.find_first_not_of(" \t\n\r\f\v");
+	end = str.find_last_not_of(" \t\n\r\f\v");
+	trimmed = str.substr(start, end - start + 1);
+	return(trimmed);
+}
+
+/*
+contact_input: This function prompts the user for input regarding a specific contact detail.
+It repeatedly prompts the user until a non-empty string is entered.
+The input is then trimmed of leading and trailing whitespace and returned.
+*/
+std::string	contact_input(std::string contact_type)
+{
+	std::string input;
+
+	std::cout << "please enter contact " << contact_type << std::endl;
+	while(42)
+	{
+		input.clear();
+		input = readline_wrapper(input);
+		if (input.length() == 0 || input.empty())
+			std::cout << contact_type << " cannot be empty, enter again:" << std::endl;
+		else if ((empty_or_spaces(input)))
+			std::cout << contact_type << " cannot be only space:" << std::endl;
+		else
+			break;
+	}
+	return (trim_string(input));
+}
+
+/*
+same but check for phone number (digit only and first can be + for international phnenber)
+*/
+std::string number_input(void)
+{
+	std::string	input;
+	
+	std::cout << "please enter contact's phone number" << std::endl;
+	while (42)
+	{
+		input.clear();
+		input = readline_wrapper(input);
+		if (input.empty() || input.length() == 0)
+			std::cout  << "phone number cannot be empty, enter again:" << std::endl;
+		else if ((empty_or_spaces(input)))
+			std::cout << "phone number cannot be only space:" << std::endl;
+		else if (input[0] != '+' && !isdigit(input[0]))
+			std::cout  << "phone number can only start by a number or +" << std::endl;
+		else if (!all_digit(input))
+			std::cout  << "phone number can only be made of numbers" << std::endl;
+		else
+			break;
+	}
+	return (trim_string(input));
+}
+
+bool empty_or_spaces(const std::string& str)
+{
+    int n = str.length();
+	if (n == 0)
+		return (true);
+	for (int i = 0; i < n; ++i)
+	{
+		if (!std::isspace(str[i]))
 			return (false);
 	}
 	return (true);
-}
-
-/*
-all_digit: This function checks if a given string consists only of digits.
-It allows a '+' symbol as the first character, making it suitable for phone
-numbers validation. The function returns true if the string meets the criteria,
-and false otherwise.
-*/
-void start_greeting(void)
-{
-	std::cout << std::endl;
-	std::cout << std::endl;
-	std::cout << "\t" << "*******************************************" << std::endl;
-	std::cout << "\t" <<  "** WELCOME TO THE PHONEBOOK OF THE 1980s **" << std::endl;
-	std::cout << "\t" <<  "*******************************************" << std::endl;
-	std::cout << std::endl;
-	std::cout << std::endl;
-}
-
-/*
-main: The main function of the program. It initializes the PhoneBook object
-and handles the main application loop. It processes user input and executes
-corresponding actions such as adding or searching contacts in the phonebook.
-The program exits if the user inputs 'EXIT'.
-*/
-int main(int argc, char *argv[])
-{
-	std::string input;
-	PhoneBook phonebk;
-
-	(void) argv[0];
-	if (argc != 1)
-	{
-		std::cout << "this program takes no argument" << std::endl;
-		exit(EXIT_FAILURE);
-	}
-	start_greeting();
-	input.clear();
-	while (input != "EXIT")
-	{
-		input = input_loader();
-		if (input == "ADD")
-			phonebk.Add();
-		else if (input == "SEARCH")
-			phonebk.Search();
-		else if (input == "EXIT")
-			std::cout << "Erasing all contacts, Goodbye !" << std::endl;
-		else
-			std::cout << "Unknown command, try again" << std::endl;
-	}
-	exit(EXIT_SUCCESS);
 }
