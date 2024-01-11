@@ -6,7 +6,7 @@
 /*   By: rjobert <rjobert@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/05 12:50:29 by rjobert           #+#    #+#             */
-/*   Updated: 2024/01/11 13:08:18 by rjobert          ###   ########.fr       */
+/*   Updated: 2024/01/11 13:18:42 by rjobert          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ std::string readline_wrapper(std::string input)
 	}
 	return (input);
 }
+
 /*
 input_loader: This function prompts the user to input a command and validates it.
 It supports commands like ADD, SEARCH, and EXIT. If the user inputs an invalid
