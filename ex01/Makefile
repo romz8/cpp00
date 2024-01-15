@@ -6,7 +6,7 @@
 #    By: rjobert <rjobert@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/08 16:48:54 by rjobert           #+#    #+#              #
-#    Updated: 2024/01/15 14:25:43 by rjobert          ###   ########.fr        #
+#    Updated: 2024/01/15 18:16:40 by rjobert          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,4 +37,4 @@ fclean: clean
 
 re: fclean all
 
-.phony: clean re all fclean
+.PHONY: clean re all fclean
