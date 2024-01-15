@@ -5,20 +5,19 @@
 #                                                     +:+ +:+         +:+      #
 #    By: rjobert <rjobert@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/01/08 16:48:54 by rjobert           #+#    #+#              #
-#    Updated: 2024/01/15 14:25:43 by rjobert          ###   ########.fr        #
+#    Created: 2024/01/15 13:28:58 by rjobert           #+#    #+#              #
+#    Updated: 2024/01/15 13:34:27 by rjobert          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC := c++
-
-SRC = main.cpp Contact.cpp PhoneBook.cpp
-NAME = phonebook
+CC = c++
+NAME = GlobalBankster
+HEADER = Account.hpp
+SRC = tests.cpp Account.cpp
 OBJS = $(SRC:.cpp=.o)
 DEPS = $(SRC:.cpp=.d)
+FLAGS = -Wall -Wextra -Werror -std=c++98 -MMD -I ./
 RM = rm -rf
-FLAGS = -Wall -Wextra -Werror -MMD -I ./
-HEADER = phonebook.h
 
 all: $(NAME)
 
@@ -32,9 +31,9 @@ $(NAME): $(OBJS)
 clean:
 	$(RM) $(OBJS) $(DEPS)
 
-fclean: clean
+fclean: clean	
 	$(RM) $(NAME)
 
 re: fclean all
 
-.phony: clean re all fclean
+.phony: re all clean fclean
